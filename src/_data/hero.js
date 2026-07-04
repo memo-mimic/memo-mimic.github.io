@@ -11,5 +11,5 @@ const sequence = [
 export default sequence.map(([label, clip]) => ({
   label,
   webm: `static/videos/${clip}_blender.webm`,
-  mp4: `static/videos/${clip}_blender.mp4`,
+  mov: `static/videos/${clip}_blender.mov`,
 }));

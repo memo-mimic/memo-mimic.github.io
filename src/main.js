@@ -45,8 +45,8 @@ function startInSync(videos, stillWanted = () => true) {
 
   function setSources(videoEl, clip) {
     videoEl.innerHTML =
-      `<source src="${clip.webm}" type="video/webm">` +
-      `<source src="${clip.mp4}" type="video/mp4; codecs=hvc1">`;
+      `<source src="${clip.mov}" type="video/quicktime; codecs=hvc1">` +
+      `<source src="${clip.webm}" type="video/webm">`;
   }
 
   function advance() {

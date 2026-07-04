@@ -15,8 +15,8 @@ layout: base.njk
   <div class="hero__media">
     <div class="hero__video-stage">
       <video class="hero__video hero__video--a" autoplay muted playsinline>
+        <source src="{{ hero[0].mov }}" type="video/quicktime; codecs=hvc1" />
         <source src="{{ hero[0].webm }}" type="video/webm" />
-        <source src="{{ hero[0].mp4 }}" type="video/mp4; codecs=hvc1" />
       </video>
       <video class="hero__video hero__video--b" muted playsinline></video>
     </div>
