@@ -4,6 +4,24 @@ let globalPaused = false;
 function wantPlay(video)  { desired.add(video);    if (!globalPaused) video.play().catch(() => {}); }
 function wantPause(video) { desired.delete(video); video.pause(); }
 
+function ready(video) {
+  if (video.readyState >= 3) return Promise.resolve();   // already playable
+  video.preload = 'auto';
+  video.load();
+  return new Promise(resolve => {
+    video.addEventListener('canplay', resolve, { once: true });
+    video.addEventListener('error',   resolve, { once: true });
+  });
+}
+
+function startInSync(videos, stillWanted = () => true) {
+  Promise.all(videos.map(ready)).then(() => {
+    if (!stillWanted()) return;
+    videos.forEach(v => { v.currentTime = 0; });
+    videos.forEach(wantPlay);
+  });
+}
+
 /* HERO */
 (function initHero() {
   const hero = document.querySelector('.hero');
@@ -118,18 +136,22 @@ function initCarousel(carousel, { onActivate } = {}) {
 
 const videoCarousel = document.querySelector('.carousel');
 if (videoCarousel) {
+  let activeRow = null;
   initCarousel(videoCarousel, {
     onActivate(row) {
+      activeRow = row;
       videoCarousel.querySelectorAll('.carousel__track video').forEach(wantPause);
-      row.querySelectorAll('video').forEach(v => { v.currentTime = 0; wantPlay(v); });
+      startInSync([...row.querySelectorAll('video')], () => activeRow === row);
     }
   });
 }
 
 function lazyPlay(root, videos) {
+  let visible = false;
   new IntersectionObserver(entries => entries.forEach(e => {
-    if (e.isIntersecting) videos.forEach(v => { v.currentTime = 0; wantPlay(v); });
-    else videos.forEach(v => wantPause(v));
+    visible = e.isIntersecting;
+    if (visible) startInSync(videos, () => visible);
+    else videos.forEach(wantPause);
   }), { threshold: 0.25 }).observe(root);
 }
 
