@@ -1,0 +1,14 @@
+{
+  "name": "memo-mimic",
+  "version": "1.0.0",
+  "description": "Teach Memo a custom greeting",
+  "type": "module",
+  "scripts": {
+    "start": "eleventy --serve --port=3000",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "@11ty/eleventy-img": "^6.0.0"
+  }
+}

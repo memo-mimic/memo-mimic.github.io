@@ -1,0 +1,12 @@
+{% macro clip(src, cls="") -%}
+<video{% if cls %} class="{{ cls }}"{% endif %} muted loop playsinline preload="none">
+  <source src="{{ src }}" type="video/mp4" />
+</video>
+{%- endmacro %}
+
+{% macro blender(base, cls="") -%}
+<video{% if cls %} class="{{ cls }}"{% endif %} muted loop playsinline preload="none">
+  <source src="static/videos/{{ base }}_blender.webm" type="video/webm" />
+  <source src="static/videos/{{ base }}_blender.mp4" type="video/mp4; codecs=hvc1" />
+</video>
+{%- endmacro %}

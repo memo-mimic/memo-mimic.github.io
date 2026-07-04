@@ -1,0 +1,169 @@
+---
+layout: base.njk
+---
+{% import "macros/video.njk" as v %}
+
+<section class="hero" data-hero='{{ hero | dump | safe }}'>
+
+  <div class="hero__text">
+    <h1 class="hero__headline">
+      What if Memo could greet you with a
+      <span class="hero__action" aria-live="polite">{{ hero[0].label }}</span>?
+    </h1>
+  </div>
+
+  <div class="hero__media">
+    <div class="hero__video-stage">
+      <video class="hero__video hero__video--a" autoplay muted playsinline>
+        <source src="{{ hero[0].webm }}" type="video/webm" />
+        <source src="{{ hero[0].mp4 }}" type="video/mp4; codecs=hvc1" />
+      </video>
+      <video class="hero__video hero__video--b" muted playsinline></video>
+    </div>
+  </div>
+
+</section>
+
+
+<section class="intro">
+  <blockquote class="intro__quote">
+    The personality and the taste of the owner should be reflected in the robots - <a href="https://youtu.be/FKRQfl86b1E?si=6xn29Jr75GCxmMRz&t=193">Shy Yang</a>
+  </blockquote>
+</section>
+
+
+<section class="carousel-section">
+  <div class="carousel__labels">
+    <span class="carousel__label">Input Video</span>
+    <span class="carousel__label">Pose Estimation</span>
+    <span class="carousel__label">Motion Retargeting</span>
+  </div>
+
+  <div class="carousel" role="region" aria-label="Action visualizations">
+
+    <div class="carousel__track">
+      {% for action in actions %}
+      <div class="carousel__row" data-action="{{ action }}">
+        {% for suffix in ["", "_frames", "_retargeted"] %}
+        <div class="carousel__cell">
+          {{ v.clip("static/videos/" + action + suffix + ".mp4") }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="carousel__controls">
+      <button class="carousel__btn carousel__btn--prev" aria-label="Previous action">&#8592;</button>
+      <div class="carousel__dots" role="tablist" aria-label="Select action"></div>
+      <button class="carousel__btn carousel__btn--next" aria-label="Next action">&#8594;</button>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="content-section">
+  <h3 class="content-section__title">What?</h3>
+  <p>
+    This is a prototype feature that allows any user to program custom greetings for Memo. From a single input video, it retargets the estimated upper-body motion to mimic the demonstrated greeting.
+  </p>
+</section>
+
+<section class="content-section">
+  <h3 class="content-section__title">How?</h3>
+
+  <p>
+    First, I built a CAD model of Memo from scratch,
+  </p>
+  <div class="img-carousel">
+    <div class="carousel__track">
+      {% for slide in cad %}
+      <figure class="img-carousel__slide">
+        <img src="{{ slide.src }}" alt="{{ slide.alt }}" loading="eager" eleventy:widths="1200" />
+      </figure>
+      {% endfor %}
+    </div>
+
+    <div class="img-carousel__controls">
+      <button class="carousel__btn img-carousel__btn--prev" aria-label="Previous">&#8592;</button>
+      <button class="carousel__btn img-carousel__btn--next" aria-label="Next">&#8594;</button>
+    </div>
+  </div>
+
+  <p>
+    Then generated a robot model,
+  </p>
+  <figure class="viz viz--viser">
+    <iframe
+      src="static/viser-client/index.html?playbackPath=../recordings/memo.viser&initialCameraPosition=0.9,0.0,0.4&initialCameraLookAt=0.0,0.0,0.0"
+      loading="lazy"
+      allowfullscreen
+      title="Memo robot model">
+    </iframe>
+  </figure>
+
+  <p>
+    For pose estimation, I experimented with <a href="https://github.com/NVlabs/GEM-X">many</a> <a href="https://github.com/MotrixLab/SMPLest-X">different</a> <a href="https://google-ai-edge.github.io/mediapipe-samples-web/#/vision/pose_landmarker">methods</a> before settling on <a href="https://github.com/Pixel-Talk/PEAR">PEAR</a> as a good balance between complexity and accuracy.
+  </p>
+  <div class="vid-pair">
+    <figure class="vid-pair__cell">
+      {{ v.clip("static/videos/cheer.mp4") }}
+      <figcaption>Input video</figcaption>
+    </figure>
+    <figure class="vid-pair__cell">
+      {{ v.clip("static/videos/pose-estimation.mp4") }}
+      <figcaption>Pose estimation</figcaption>
+    </figure>
+  </div>
+
+  <p>
+  For retargeting, I reimplemented the method from <a href="https://sew-mimic.com/">SEW-MIMIC</a>. I found the analytical construction more elegant than existing optimization-based approaches like <a href="https://github.com/YanjieZe/GMR">GMR</a>.
+  </p>
+  <div class="vid-pair">
+    <figure class="vid-pair__cell">
+      {{ v.clip("static/videos/sew-arms.mp4") }}
+      <figcaption>Input motion</figcaption>
+    </figure>
+    <figure class="vid-pair__cell">
+      {{ v.clip("static/videos/cheer_retargeted.mp4") }}
+      <figcaption>Motion retargeting</figcaption>
+    </figure>
+  </div>
+
+  <p>
+  None of the simulation viewers look quite that pretty, so I also wrote a Blender extension to import robot models as rigged armatures, and generated a short script to animate retargeted trajectories.
+  </p>
+  <div class="media-row">
+    <figure class="viz viz--image">
+      <img src="static/images/memo-blender.png" alt="CAD model of Memo robot" />
+    </figure>
+    <figure class="viz viz--video">
+      {{ v.blender("blue_wave_right", "js-lazy-video") }}
+    </figure>
+  </div>
+</section>
+
+
+<section class="content-section">
+  <h3 class="content-section__title">Why?</h3>
+  <p>
+    I think what Sunday is doing is awesome and I would love to be a part of the team. I figured building this demo would be a good way to demonstrate that I have the skills and passion to contribute to your mission.
+  </p>
+</section>
+
+<section class="content-section">
+  <h3 class="content-section__title">Who am I?</h3>
+  <p>
+    My name is Henry Noyes. I am graduating in August with my Master's degree from Northeastern, where <a href="https://henrynoyes.info">I have spent the last four years doing robotics research</a>—mostly centered on <a href="https://advanced.onlinelibrary.wiley.com/doi/10.1002/aisy.202500352">snake robot autonomy</a>. I have a background in simulation and controls, but I have touched most avenues of robotics. In my free time, <a href="https://henrynoyes.space">I like to build things</a>. You can view my resume <a href="https://henrynoyes.info/henry-noyes-resume.pdf">here</a>. You can contact me at <a href="">noyes.he@northeastern.edu</a> or 845-905-6<span class="reveal-trigger">67</span>1. If this has sparked any intrigue, I would love to chat.
+  </p>
+  <figure class="reveal" data-reveal>
+    <div class="reveal__inner">
+      {{ v.blender("blue_sixseven", "js-lazy-video") }}
+    </div>
+  </figure>
+</section>
+
+<footer class="footer">
+  <p> Henry Noyes 2026</p>
+</footer>
