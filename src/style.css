@@ -1,24 +1,31 @@
-/* @font-face {
-  font-family: "";
+@font-face {
+  font-family: "AH-Next";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(static/fonts/);
+  src: url(static/fonts/AtkinsonHyperlegibleNext-Regular.woff2) format("woff2");
 } 
 @font-face {
-  font-family: "";
+  font-family: "AH-Next";
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: url(static/fonts/);
+  src: url(static/fonts/AtkinsonHyperlegibleNext-RegularItalic.woff2) format("woff2");
 }
 @font-face {
-  font-family: "";
+  font-family: "AH-Next";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(static/fonts/);
-} */
+  src: url(static/fonts/AtkinsonHyperlegibleNext-Bold.woff2) format("woff2");
+}
+@font-face {
+  font-family: "AH-Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(static/fonts/AtkinsonHyperlegibleMono-Regular.woff2) format("woff2");
+}
 
 :root {
   /* Color */
@@ -32,16 +39,16 @@
   --color-link-hover:  #5e2296;
 
   /* Typography */
-  --font-display: sans-serif;
-  --font-body:    sans-serif;
-  --font-mono:    monospace;
+  --font-display: "AH-Next", sans-serif;
+  --font-body:    "AH-Next", sans-serif;
+  --font-mono:    "AH-Mono", monospace;
 
   /* Type scale */
   --text-xs:   0.75rem;
   --text-sm:   0.875rem;
-  --text-base: 1rem;
-  --text-lg:   1.125rem;
-  --text-xl:   1.375rem;
+  --text-md:   1.125rem;
+  --text-base: 1.25rem;
+  --text-xl:   1.5rem;
   --text-hero: clamp(2rem, 5vw, 3.5rem);
 
   /* Spacing */
@@ -108,7 +115,7 @@ a:hover        { color: var(--color-link-hover); }
 .hero__headline {
   font-family: var(--font-display);
   font-size: var(--text-hero);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
@@ -202,7 +209,6 @@ a:hover        { color: var(--color-link-hover); }
 .carousel__label {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
@@ -221,7 +227,7 @@ a:hover        { color: var(--color-link-hover); }
   border-radius: 50%;
   width: 2.5rem;
   height: 2.5rem;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   cursor: pointer;
   line-height: 1;
   color: var(--color-text);
@@ -363,6 +369,20 @@ a:hover        { color: var(--color-link-hover); }
   border: 1px solid var(--color-border);
 }
 
+.viz--viser { position: relative; }
+
+.viz--viser__badge {
+  position: absolute;
+  right: 0.75rem;
+  bottom: calc(var(--space-sm) + 0.75rem);
+  width: 50px;
+  height: 50px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' d='M8 8.26v2.07m0-2.07l1.7-1.04M8 8.26L6.3 7.22M2 4.42V6.3m0-1.87l1.85-1.09M2 4.43L3.85 5.5M2 11.47V9.4m0 2.07l1.85 1.2M2 11.47l1.85-1.03M14 11.47V9.4m0 2.07l-1.85 1.2m1.85-1.2l-1.85-1.03M14 4.42V6.3m0-1.87l-1.85-.93m1.85.93l-1.85 1.1M8 15v-2.18M8 15l1.7-1M8 15l-1.7-1M8 1v2.18M8 1l1.7 1M8 1L6.3 2'/%3E%3C/svg%3E");
+}
+
 .reveal {
   display: grid;
   grid-template-rows: 0fr;
@@ -388,7 +408,7 @@ a:hover        { color: var(--color-link-hover); }
   object-fit: cover;
   opacity: 0;
   margin-block: -4rem;
-  margin-top: -8rem;
+  margin-top: -7rem;
   transition: opacity var(--fade-duration) var(--transition-ease) 150ms;
 }
 .reveal.is-revealed video { opacity: 1; }
@@ -468,6 +488,8 @@ a:hover        { color: var(--color-link-hover); }
 
 /* RESPONSIVE */
 @media (max-width: 700px) {
+  :root { --text-base: 1rem; }
+
   .hero { grid-template-columns: 1fr; }
 
   .hero__media { margin-left: 0; }

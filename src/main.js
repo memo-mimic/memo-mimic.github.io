@@ -5,7 +5,7 @@ function wantPlay(video)  { desired.add(video);    if (!globalPaused) video.play
 function wantPause(video) { desired.delete(video); video.pause(); }
 
 function ready(video) {
-  if (video.readyState >= 3) return Promise.resolve();   // already playable
+  if (video.readyState >= 3) return Promise.resolve();  // already playable
   video.preload = 'auto';
   video.load();
   return new Promise(resolve => {
@@ -41,7 +41,7 @@ function startInSync(videos, stillWanted = () => true) {
 
   let index = 0;
   let front = vidA;  // currently visible
-  let back  = vidB;  // preloading next
+  let back  = vidB;  // buffering the next clip
 
   function setSources(videoEl, clip) {
     videoEl.innerHTML =
@@ -49,29 +49,44 @@ function startInSync(videos, stillWanted = () => true) {
       `<source src="${clip.webm}" type="video/webm">`;
   }
 
+  function preloadNext() {
+    back.autoplay = false;
+    back.preload  = 'auto';
+    setSources(back, clips[(index + 1) % clips.length]);
+    back.load();
+  }
+
+  function whenFrameReady(video) {
+    return video.readyState >= 2
+      ? Promise.resolve()
+      : new Promise(r => video.addEventListener('loadeddata', r, { once: true }));
+  }
+
   function advance() {
     index = (index + 1) % clips.length;
 
-    setSources(back, clips[index]);
-    back.load();
-    wantPlay(back);
+    whenFrameReady(back).then(() => {
+      label.classList.add('is-fading');
+      setTimeout(() => {
+        wantPlay(back);
+        back.style.opacity  = '1';
+        front.style.opacity = '0';
+        wantPause(front);
+        front.innerHTML = '';
+        [front, back] = [back, front];
+        front.addEventListener('ended', advance, { once: true });
 
-    label.classList.add('is-fading');
-    setTimeout(() => {
-      back.style.opacity  = '1';
-      front.style.opacity = '0';
-      wantPause(front);
-      front.innerHTML = '';
-      [front, back] = [back, front];
-      front.addEventListener('ended', advance, { once: true });
+        label.textContent = clips[index].label;
+        label.classList.remove('is-fading');
 
-      label.textContent = clips[index].label;
-      label.classList.remove('is-fading');
-    }, fadeDuration);
+        preloadNext();   // buffer the following clip
+      }, fadeDuration);
+    });
   }
 
   front.addEventListener('ended', advance, { once: true });
   desired.add(front);
+  preloadNext();  // buffer clip[1] into the hidden element up front
 })();
 
 /* CAROUSEL */
